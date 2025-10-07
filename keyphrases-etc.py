@@ -11,7 +11,7 @@
 #   https://www.nltk.org/book_1ed/ch05.html
 #   https://www.geeksforgeeks.org/python-lemmatization-with-nltk/
 
-import yake
+# import yake
 import nltk
 from nltk.tokenize import word_tokenize
 from nltk.tokenize import RegexpTokenizer
@@ -24,7 +24,7 @@ import pandas as pd
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 from matplotlib import rcParams
-from wordcloud import WordCloud, STOPWORDS
+# from wordcloud import WordCloud, STOPWORDS
 
 """
 text = "Imagine that you’re creating a logistics management application. " \
@@ -45,22 +45,28 @@ text = "Imagine that you’re creating a logistics management application. " \
        "the app’s behavior depending on the class of transportation objects."
 """
 # the same text without as many example-oriented words
-text = "Imagine that you’re creating a  application. " \
-       "The first version of your app can only handle  by " \
-       ", so the bulk of your code lives inside the  class. " \
-       "After a while, your app becomes  popular. Each day you " \
-       "receive dozens of requests  to " \
-       "incorporate  into the app. Adding a new " \
-       " class to the program causes an issue. Adding a new " \
-       "class to the program isn’t that simple if the rest of the code is " \
-       "already coupled to existing classes. Great news, right? But how " \
-       "about the code? At present, most of your code is coupled to the " \
-       " class. Adding  into the app would require making " \
-       "changes to the entire codebase. Moreover, if later you decide to " \
-       "add another type of  to the app, you will probably " \
-       "need to make all of these changes again. As a result, you will end " \
-       "up with  nasty code, riddled with conditionals that switch " \
-       "the app’s behavior depending on the class of  objects."
+# text = "Imagine that you’re creating a  application. " \
+#        "The first version of your app can only handle  by " \
+#        ", so the bulk of your code lives inside the  class. " \
+#        "After a while, your app becomes  popular. Each day you " \
+#        "receive dozens of requests  to " \
+#        "incorporate  into the app. Adding a new " \
+#        " class to the program causes an issue. Adding a new " \
+#        "class to the program isn’t that simple if the rest of the code is " \
+#        "already coupled to existing classes. Great news, right? But how " \
+#        "about the code? At present, most of your code is coupled to the " \
+#        " class. Adding  into the app would require making " \
+#        "changes to the entire codebase. Moreover, if later you decide to " \
+#        "add another type of  to the app, you will probably " \
+#        "need to make all of these changes again. As a result, you will end " \
+#        "up with  nasty code, riddled with conditionals that switch " \
+#        "the app’s behavior depending on the class of  objects."
+
+import wikipedia
+# text = wikipedia.summary("Lyon") # this will give you the summary of "Lion"
+# text = wikipedia.page('Lyon').summary
+text = wikipedia.summary("Lyon", auto_suggest=False)
+print(text)
 
 def most_common(lst):
     return max(set(lst), key=lst.count)
@@ -84,10 +90,10 @@ print(important_words)
 
 # print the top 10 keyphrases in the text
 # using YAKE!
-kw_extractor = yake.KeywordExtractor(top=10, stopwords=None)
-keyphrases = kw_extractor.extract_keywords(important_words)
-for kw, v in keyphrases:
-    print("Keyphrase: ",kw, ": score", v)
+# kw_extractor = yake.KeywordExtractor(top=10, stopwords=None)
+# keyphrases = kw_extractor.extract_keywords(important_words)
+# for kw, v in keyphrases:
+#     print("Keyphrase: ",kw, ": score", v)
 
 # NLTK information extraction
 sentences = nltk.sent_tokenize(text)
@@ -103,11 +109,11 @@ stop_words = set(stopwords.words('english'))
 lemmatizer = WordNetLemmatizer()    # lemmatization returns a valid word at all times
 
 # display a word cloud of the words in the text
-wordcloud = WordCloud(stopwords=stop_words, background_color="white", max_words=1000).generate(text)
-rcParams['figure.figsize'] = 10, 20
-plt.imshow(wordcloud)
-plt.axis("off")
-plt.show()
+# wordcloud = WordCloud(stopwords=stop_words, background_color="white", max_words=1000).generate(text)
+# rcParams['figure.figsize'] = 10, 20
+# plt.imshow(wordcloud)
+# plt.axis("off")
+# plt.show()
 
 # get the individual words of the text, minus extra verb tenses, plurals, and stopwords
 # use lemmatization instead of stemming
