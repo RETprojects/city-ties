@@ -7,4 +7,6 @@ Discover which cities have some unexpected things in common! This application us
     [ ] Whole page
 [ ] Enable user to search for cities which have a certain attribute
 [ ] Determine for a city the "recommended" cities
+    [ ] Clustering
+        [ ] Determine optimal number of clusters empirically (using set of cities w/ >1M inhabitants)
 [ ] Map showing cities
