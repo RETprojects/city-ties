@@ -1,2 +1,10 @@
 # city-ties
 Discover which cities have some unexpected things in common! This application uses NLP and Wikipedia pages to find attributes that cities around the world have in common.
+
+## TODO
+[ ] Get data for each city w/ at least 1M inhabitants
+    [ ] Summary
+    [ ] Whole page
+[ ] Enable user to search for cities which have a certain attribute
+[ ] Determine for a city the "recommended" cities
+[ ] Map showing cities
