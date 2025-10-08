@@ -33,9 +33,27 @@
 
 import pandas as pd
 import wikipedia as wp
+import requests
+from bs4 import BeautifulSoup
+
 html = wp.page("List of national capitals", auto_suggest=False).html().encode("UTF-8")
 try: 
     df = pd.read_html(html, extract_links = "body")[1]  # Try 2nd table first as most pages contain contents table first
 except IndexError:
     df = pd.read_html(html, extract_links = "body")[0]
 print(df['City/Town'].to_string())
+
+# get what we want from the pages
+# city name, keywords, & cluster label
+# city_df = df['City/Town']
+for index, row in df.iterrows():
+    # follow the link to that city's page
+    url='https://en.wikipedia.org' + df.iloc[index]['City/Town'][1]
+    print(url)
+    response = requests.get(url=url)
+    soup = BeautifulSoup(response.content, 'html.parser')
+    # title = soup.find('h1')
+    # print(title.string)
+    print([item.get_text() for item in soup.select("h2 .mw-headline")])
+    # city_page = wp.page(df.iloc[index]['City/Town'][0], auto_suggest=False).html().encode("UTF-8")
+    # print(city_page.summary)
