@@ -43,17 +43,24 @@ except IndexError:
     df = pd.read_html(html, extract_links = "body")[0]
 print(df['City/Town'].to_string())
 
+# df.to_csv('national_capitals.csv', index=False)
+
 # get what we want from the pages
 # city name, keywords, & cluster label
-# city_df = df['City/Town']
+city_df = df['City/Town']
 for index, row in df.iterrows():
     # follow the link to that city's page
-    url='https://en.wikipedia.org' + df.iloc[index]['City/Town'][1]
-    print(url)
-    response = requests.get(url=url)
-    soup = BeautifulSoup(response.content, 'html.parser')
+    # url='https://en.wikipedia.org' + df.iloc[index]['City/Town'][1]
+    # print(url)
+    # response = requests.get(url=url)
+    # soup = BeautifulSoup(response.content, 'html.parser')
+    # # title = soup.find('h1')
+    # # print(title.string)
+    # # print([item.get_text() for item in soup.select("mw-page-title-main")])
+    # # city_page = wp.page(df.iloc[index]['City/Town'][0], auto_suggest=False).html().encode("UTF-8")
+    # # print(city_page.summary)
     # title = soup.find('h1')
+    # print(title)
     # print(title.string)
-    print([item.get_text() for item in soup.select("h2 .mw-headline")])
-    # city_page = wp.page(df.iloc[index]['City/Town'][0], auto_suggest=False).html().encode("UTF-8")
-    # print(city_page.summary)
+    city_page = wp.page(df.iloc[index]['City/Town'][1][6:].replace('_',' '), auto_suggest=False)
+    print(city_page.summary)
