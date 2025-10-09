@@ -73,11 +73,13 @@ print(df['City/Town'].to_string())
 
 # get what we want from the pages
 # city name, keywords, & cluster label
-city_df = df['City/Town']
-city_df.rename({'City/Town': 'Name'}, axis=1)
+city_df = df[['City/Town', 'Country/Territory']]
+city_df.rename({'City/Town': 'Name', 'Country/Territory' : 'Keywords'}, axis=1)
 for index, row in df.iterrows():
     # record the city's name in the new dataframe
-    city_df.iloc[index]['Name'] = df.iloc[index]['City/Town'][1][6:].replace('_',' ')
+    city_name = str(df.iloc[index]['City/Town'][1][6:].replace('_',' ')).encode('utf-8').decode('cp1252')
+    print(city_name)
+    city_df.iloc[index]['Name'] = city_name
 
     # follow the link to that city's page
     # url='https://en.wikipedia.org' + df.iloc[index]['City/Town'][1]
@@ -92,7 +94,7 @@ for index, row in df.iterrows():
     # title = soup.find('h1')
     # print(title)
     # print(title.string)
-    city_page = wp.page(df.iloc[index]['City/Town'][1][6:].replace('_',' '), auto_suggest=False)
+    city_page = wp.page(city_name, auto_suggest=False)
     # print(city_page.summary)
 
     # get the keywords of this page's content
@@ -133,6 +135,7 @@ for index, row in df.iterrows():
     city_df.iloc[index]['Keywords'] = [kw for kw, v in keyphrases]
 
 # make clusters of the cities!
+# thanks to https://www.kaggle.com/code/ronnahshon/unsupervised-clustering-with-us-census-tracts
 
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
