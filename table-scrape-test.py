@@ -76,12 +76,13 @@ print(df['City/Town'].to_string())
 # get what we want from the pages
 # city name, keywords, & cluster label
 city_df = df[['City/Town', 'Country/Territory']]
-city_df.rename({'City/Town': 'Name', 'Country/Territory' : 'Keywords'}, axis=1)
+# city_df.rename({'City/Town': 'Name', 'Country/Territory' : 'Keywords'}, axis=1)
+df.rename(columns={'City/Town': 'Name', 'Country/Territory': 'Keywords'})
 for index, row in df.iterrows():
     # record the city's name in the new dataframe
     city_name = unquote(str(df.iloc[index]['City/Town'][1][6:].replace('_',' '))) # thanks to https://stackoverflow.com/a/16566128
     print(city_name)
-    city_df.iloc[index]['Name'] = city_name
+    city_df.loc[index, 'Name'] = city_name
 
     # follow the link to that city's page
     # url='https://en.wikipedia.org' + df.iloc[index]['City/Town'][1]
@@ -134,7 +135,7 @@ for index, row in df.iterrows():
     #     print("Keyphrase: ",kw, ": score", v)
 
     # store the keywords in that city's Keywords column
-    city_df.iloc[index]['Keywords'] = [kw for kw, v in keyphrases]
+    city_df.loc[index, 'Keywords'] = ' '.join([kw for kw, v in keyphrases])
 
 # make clusters of the cities!
 # thanks to https://www.kaggle.com/code/ronnahshon/unsupervised-clustering-with-us-census-tracts
@@ -149,7 +150,7 @@ from tqdm.notebook import tqdm
 # from sklearn.decomposition import PCA
 
 # Convert dataframe into numpy array (allows for faster computation)
-X = city_df['Keywords'].values
+X = city_df[['Keywords']].values
 
 # Define range of clusters to check
 inertia_scores = []
