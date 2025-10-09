@@ -65,8 +65,10 @@ text = "Imagine that you’re creating a logistics management application. " \
 import wikipedia
 # text = wikipedia.summary("Lyon") # this will give you the summary of "Lion"
 # text = wikipedia.page('Lyon').summary
-text = wikipedia.summary("Lyon", auto_suggest=False)
-print(text)
+# text = wikipedia.summary("Lyon", auto_suggest=False)
+page = wikipedia.page('Lyon', auto_suggest=False)
+text = page.content
+# print(text)
 
 def most_common(lst):
     return max(set(lst), key=lst.count)
@@ -84,16 +86,16 @@ def basicForm(word):
 english_stops = set(stopwords.words('english'))
 words = word_tokenize(text)
 words_list = [word for word in words if word not in english_stops]
-print(words_list)
+# print(words_list)
 important_words = ' '.join(words_list)
-print(important_words)
+# print(important_words)
 
-# print the top 10 keyphrases in the text
-# using YAKE!
-kw_extractor = yake.KeywordExtractor(n=1, top=20, stopwords=english_stops)
-keyphrases = kw_extractor.extract_keywords(important_words)
-for kw, v in keyphrases:
-    print("Keyphrase: ",kw, ": score", v)
+# # print the top 10 keyphrases in the text
+# # using YAKE!
+# kw_extractor = yake.KeywordExtractor(n=1, top=20, stopwords=english_stops)
+# keyphrases = kw_extractor.extract_keywords(important_words)
+# for kw, v in keyphrases:
+#     print("Keyphrase: ",kw, ": score", v)
 
 # NLTK information extraction
 sentences = nltk.sent_tokenize(text)
@@ -105,7 +107,7 @@ for sent in tagged_sentences:
     best_parts_of_sent = [t[0] for t in sent if (t[1] == "NNP" or t[1] == "NN" or t[1] == "NNS" or t[1] == "JJ" or t[1] == "JJR")]
     for word in best_parts_of_sent:
         best_parts.append(word)
-print(best_parts)
+# print(best_parts)
 best_parts_str = ' '.join(best_parts)
 print(best_parts_str)
 
@@ -113,15 +115,15 @@ print(best_parts_str)
 # using YAKE!
 kw_extractor = yake.KeywordExtractor(n=1, top=20, stopwords=english_stops)
 keyphrases = kw_extractor.extract_keywords(best_parts_str)
-print("new keywords!")
+# print("new keywords!")
 for kw, v in keyphrases:
     print("Keyphrase: ",kw, ": score", v)
 
-word_stemmer = PorterStemmer()  # to find the stems of words to account for plural nouns and different tenses of verbs
-tokenizer = RegexpTokenizer(r'\w+') # this tokenizer splits up the text into words and filters out punctuation
-#stopwords = STOPWORDS
-stop_words = set(stopwords.words('english'))
-lemmatizer = WordNetLemmatizer()    # lemmatization returns a valid word at all times
+# word_stemmer = PorterStemmer()  # to find the stems of words to account for plural nouns and different tenses of verbs
+# tokenizer = RegexpTokenizer(r'\w+') # this tokenizer splits up the text into words and filters out punctuation
+# #stopwords = STOPWORDS
+# stop_words = set(stopwords.words('english'))
+# lemmatizer = WordNetLemmatizer()    # lemmatization returns a valid word at all times
 
 # display a word cloud of the words in the text
 # wordcloud = WordCloud(stopwords=stop_words, background_color="white", max_words=1000).generate(text)
@@ -130,36 +132,36 @@ lemmatizer = WordNetLemmatizer()    # lemmatization returns a valid word at all 
 # plt.axis("off")
 # plt.show()
 
-# get the individual words of the text, minus extra verb tenses, plurals, and stopwords
-# use lemmatization instead of stemming
-#filtered_words = [most_common([lemmatizer.lemmatize(word.lower(),'v'),lemmatizer.lemmatize(word.lower(),'n'),lemmatizer.lemmatize(word.lower(),'n')]) for word in tokenizer.tokenize(text) if word not in stopwords]
-#filtered_words = [most_common([lemmatizer.lemmatize(word.lower(), 'a'),     # adjective
-#                                lemmatizer.lemmatize(word.lower(), 's'),    # satellite adjective
-#                                lemmatizer.lemmatize(word.lower(), 'r'),    # adverb
-#                                lemmatizer.lemmatize(word.lower(), 'n'),    # noun
-#                                lemmatizer.lemmatize(word.lower(), 'v')])   # verb
-#                    for word in tokenizer.tokenize(text) if word not in stopwords]
-#filtered_words = [basicForm(word.lower()) for word in tokenizer.tokenize(text) if word not in stopwords]
-filtered_words = [lemmatizer.lemmatize(word[0].lower(), pos="v") for word in nltk.pos_tag(tokenizer.tokenize(text)) if word[0] not in stop_words]
-counted_words = collections.Counter(filtered_words)
-words = []
-counts = []
-for letter, count in counted_words.most_common(10):
-    words.append(letter)
-    counts.append(count)
-# display a graph of the 10 most common words in the text
-colors = cm.rainbow(np.linspace(0, 1, 10))
-rcParams['figure.figsize'] = 20, 10
-plt.title('Top words in the headlines vs their count')
-plt.xlabel('Count')
-plt.ylabel('Words')
-plt.barh(words, counts, color=colors)
-plt.show()
-# print filtered_words for validation
-print(filtered_words)
-# now print each word in counted_words for validation
-print(counted_words)
-# another test
-for word in tokenizer.tokenize(text):
-    checkList=[lemmatizer.lemmatize(word,'v'),lemmatizer.lemmatize(word,'n'),lemmatizer.lemmatize(word,'n')]
-    print(checkList)
+# # get the individual words of the text, minus extra verb tenses, plurals, and stopwords
+# # use lemmatization instead of stemming
+# #filtered_words = [most_common([lemmatizer.lemmatize(word.lower(),'v'),lemmatizer.lemmatize(word.lower(),'n'),lemmatizer.lemmatize(word.lower(),'n')]) for word in tokenizer.tokenize(text) if word not in stopwords]
+# #filtered_words = [most_common([lemmatizer.lemmatize(word.lower(), 'a'),     # adjective
+# #                                lemmatizer.lemmatize(word.lower(), 's'),    # satellite adjective
+# #                                lemmatizer.lemmatize(word.lower(), 'r'),    # adverb
+# #                                lemmatizer.lemmatize(word.lower(), 'n'),    # noun
+# #                                lemmatizer.lemmatize(word.lower(), 'v')])   # verb
+# #                    for word in tokenizer.tokenize(text) if word not in stopwords]
+# #filtered_words = [basicForm(word.lower()) for word in tokenizer.tokenize(text) if word not in stopwords]
+# filtered_words = [lemmatizer.lemmatize(word[0].lower(), pos="v") for word in nltk.pos_tag(tokenizer.tokenize(text)) if word[0] not in stop_words]
+# counted_words = collections.Counter(filtered_words)
+# words = []
+# counts = []
+# for letter, count in counted_words.most_common(10):
+#     words.append(letter)
+#     counts.append(count)
+# # display a graph of the 10 most common words in the text
+# colors = cm.rainbow(np.linspace(0, 1, 10))
+# rcParams['figure.figsize'] = 20, 10
+# plt.title('Top words in the headlines vs their count')
+# plt.xlabel('Count')
+# plt.ylabel('Words')
+# plt.barh(words, counts, color=colors)
+# plt.show()
+# # print filtered_words for validation
+# print(filtered_words)
+# # now print each word in counted_words for validation
+# print(counted_words)
+# # another test
+# for word in tokenizer.tokenize(text):
+#     checkList=[lemmatizer.lemmatize(word,'v'),lemmatizer.lemmatize(word,'n'),lemmatizer.lemmatize(word,'n')]
+#     print(checkList)
