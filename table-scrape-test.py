@@ -50,6 +50,8 @@ import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 from matplotlib import rcParams
 
+from urllib.parse import unquote
+
 def most_common(lst):
     return max(set(lst), key=lst.count)
 
@@ -77,7 +79,7 @@ city_df = df[['City/Town', 'Country/Territory']]
 city_df.rename({'City/Town': 'Name', 'Country/Territory' : 'Keywords'}, axis=1)
 for index, row in df.iterrows():
     # record the city's name in the new dataframe
-    city_name = str(df.iloc[index]['City/Town'][1][6:].replace('_',' ')).encode('utf-8').decode('cp1252')
+    city_name = unquote(str(df.iloc[index]['City/Town'][1][6:].replace('_',' '))) # thanks to https://stackoverflow.com/a/16566128
     print(city_name)
     city_df.iloc[index]['Name'] = city_name
 
