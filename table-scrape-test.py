@@ -101,7 +101,7 @@ for index, row in df.iterrows():
     # print(city_page.summary)
 
     # get the keywords of this page's content
-    text = city_page.content
+    text = city_page.content.lower().strip()
 
     # using NLTK
     english_stops = set(stopwords.words('english'))
@@ -148,9 +148,13 @@ import numpy as np
 import pandas as pd
 from tqdm.notebook import tqdm
 # from sklearn.decomposition import PCA
+from sklearn.feature_extraction.text import TfidfVectorizer
 
-# Convert dataframe into numpy array (allows for faster computation)
-X = city_df[['Keywords']].values
+# # Convert dataframe into numpy array (allows for faster computation)
+# X = city_df[['Keywords']].values
+# thanks to https://medium.com/@danielafrimi/text-clustering-using-nlp-techniques-c2e6b08b6e95
+vectorizer = TfidfVectorizer(sublinear_tf=True, min_df=5, max_df=0.95)
+X = vectorizer.fit_transform(df['text_cleaned']).toarray()
 
 # Define range of clusters to check
 inertia_scores = []
