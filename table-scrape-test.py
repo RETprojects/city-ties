@@ -74,7 +74,11 @@ print(df['City/Town'].to_string())
 # get what we want from the pages
 # city name, keywords, & cluster label
 city_df = df['City/Town']
+city_df.rename({'City/Town': 'Name'}, axis=1)
 for index, row in df.iterrows():
+    # record the city's name in the new dataframe
+    city_df.iloc[index]['Name'] = df.iloc[index]['City/Town'][1][6:].replace('_',' ')
+
     # follow the link to that city's page
     # url='https://en.wikipedia.org' + df.iloc[index]['City/Town'][1]
     # print(url)
@@ -124,3 +128,6 @@ for index, row in df.iterrows():
     # print("new keywords!")
     # for kw, v in keyphrases:
     #     print("Keyphrase: ",kw, ": score", v)
+
+    # store the keywords in that city's Keywords column
+    city_df.iloc[index]['Keywords'] = [kw for kw, v in keyphrases]
