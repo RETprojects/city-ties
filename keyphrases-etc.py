@@ -103,7 +103,8 @@ best_parts = []
 for sent in tagged_sentences:
     # print(nltk.ne_chunk(sent))
     best_parts_of_sent = [t[0] for t in sent if (t[1] == "NNP" or t[1] == "NN" or t[1] == "NNS" or t[1] == "JJ" or t[1] == "JJR")]
-    best_parts.append(best_parts_of_sent)
+    for word in best_parts_of_sent:
+        best_parts.append(word)
 print(best_parts)
 
 word_stemmer = PorterStemmer()  # to find the stems of words to account for plural nouns and different tenses of verbs
