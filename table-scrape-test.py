@@ -131,3 +131,6 @@ for index, row in df.iterrows():
 
     # store the keywords in that city's Keywords column
     city_df.iloc[index]['Keywords'] = [kw for kw, v in keyphrases]
+
+# save the data
+city_df.to_csv('national_capitals.csv', index=False)
