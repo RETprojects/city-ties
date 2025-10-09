@@ -11,7 +11,7 @@
 #   https://www.nltk.org/book_1ed/ch05.html
 #   https://www.geeksforgeeks.org/python-lemmatization-with-nltk/
 
-# import yake
+import yake
 import nltk
 from nltk.tokenize import word_tokenize
 from nltk.tokenize import RegexpTokenizer
@@ -90,17 +90,21 @@ print(important_words)
 
 # print the top 10 keyphrases in the text
 # using YAKE!
-# kw_extractor = yake.KeywordExtractor(top=10, stopwords=None)
-# keyphrases = kw_extractor.extract_keywords(important_words)
-# for kw, v in keyphrases:
-#     print("Keyphrase: ",kw, ": score", v)
+kw_extractor = yake.KeywordExtractor(n=1, top=20, stopwords=english_stops)
+keyphrases = kw_extractor.extract_keywords(important_words)
+for kw, v in keyphrases:
+    print("Keyphrase: ",kw, ": score", v)
 
 # NLTK information extraction
 sentences = nltk.sent_tokenize(text)
 tokenized_sentences = [nltk.word_tokenize(sentence) for sentence in sentences]
 tagged_sentences = [nltk.pos_tag(sentence) for sentence in tokenized_sentences]
+best_parts = []
 for sent in tagged_sentences:
-    print(nltk.ne_chunk(sent))
+    # print(nltk.ne_chunk(sent))
+    best_parts_of_sent = [t[0] for t in sent if (t[1] == "NNP" or t[1] == "NN" or t[1] == "NNS" or t[1] == "JJ" or t[1] == "JJR")]
+    best_parts.append(best_parts_of_sent)
+print(best_parts)
 
 word_stemmer = PorterStemmer()  # to find the stems of words to account for plural nouns and different tenses of verbs
 tokenizer = RegexpTokenizer(r'\w+') # this tokenizer splits up the text into words and filters out punctuation
