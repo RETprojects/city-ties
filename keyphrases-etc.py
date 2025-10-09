@@ -104,7 +104,7 @@ tagged_sentences = [nltk.pos_tag(sentence) for sentence in tokenized_sentences]
 best_parts = []
 for sent in tagged_sentences:
     # print(nltk.ne_chunk(sent))
-    best_parts_of_sent = [t[0] for t in sent if (t[1] == "NN" or t[1] == "NNS" or t[1] == "JJ" or t[1] == "JJR")]
+    best_parts_of_sent = [t[0] for t in sent if (t[1] == "NN" or t[1] == "NNS" or t[1] == "JJ")]
     for word in best_parts_of_sent:
         best_parts.append(word)
 # print(best_parts)
