@@ -106,6 +106,16 @@ for sent in tagged_sentences:
     for word in best_parts_of_sent:
         best_parts.append(word)
 print(best_parts)
+best_parts_str = ' '.join(best_parts)
+print(best_parts_str)
+
+# print the top 10 keyphrases out of those words
+# using YAKE!
+kw_extractor = yake.KeywordExtractor(n=1, top=20, stopwords=english_stops)
+keyphrases = kw_extractor.extract_keywords(best_parts_str)
+print("new keywords!")
+for kw, v in keyphrases:
+    print("Keyphrase: ",kw, ": score", v)
 
 word_stemmer = PorterStemmer()  # to find the stems of words to account for plural nouns and different tenses of verbs
 tokenizer = RegexpTokenizer(r'\w+') # this tokenizer splits up the text into words and filters out punctuation
