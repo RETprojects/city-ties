@@ -7,6 +7,6 @@ Discover which cities have some unexpected things in common! This application us
     - [X] Whole page
 - [ ] Enable user to search for cities which have a certain attribute
 - [ ] Determine for a city the "recommended" cities
-    - [ ] Clustering
+    - [ ] Clustering (use overlapping clustering algorithm like fuzzy c-means, NOT an exclusive algorithm like k-means)
         - [ ] Determine optimal number of clusters empirically (using set of capitals (or cities w/ >1M inhabitants))
 - [ ] Map showing cities
