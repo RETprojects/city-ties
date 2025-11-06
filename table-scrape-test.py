@@ -229,7 +229,11 @@ silhouette_kmeans_euclidean = round(silhouette_score(X, y_kmeans, metric="euclid
 silhouette_kmeans_manhattan = round(silhouette_score(X, y_kmeans, metric="manhattan"), 4)
 print("Silhouette Score KMeans Euclidean:", silhouette_kmeans_euclidean, "\nSilhouette Score KMeans Manhattan:", silhouette_kmeans_manhattan)
 
-
+# store cluster number for each city
+city_df['Kmeans'] = None # initialize a new empty column to store cluster numbers for this particular algorithm
+for index, row in city_df.iterrows():
+    # store the number in that city's cluster number column
+    city_df.loc[index, 'Kmeans'] = y_kmeans[index]
 
 # save the data
-# city_df.to_csv('national_capitals.csv', index=False)
+city_df.to_csv('national_capitals.csv', index=False)
