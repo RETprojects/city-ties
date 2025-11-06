@@ -237,7 +237,8 @@ if __name__ == '__main__': # for Windows compatibility
     print("Silhouette Score KMeans Euclidean:", silhouette_kmeans_euclidean, "\nSilhouette Score KMeans Manhattan:", silhouette_kmeans_manhattan)
 
     # store cluster number for each city
-    city_df['Kmeans'] = None # initialize a new empty column to store cluster numbers for this particular algorithm
+    # city_df['Kmeans'] = None
+    city_df.insert(loc=1, column='Kmeans', value=['' for i in range(city_df.shape[0])]) # initialize a new empty column to store cluster numbers for this particular algorithm
     for index, row in city_df.iterrows():
         # store the number in that city's cluster number column
         city_df.loc[index, 'Kmeans'] = y_kmeans[index]
