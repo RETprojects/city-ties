@@ -156,58 +156,80 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 vectorizer = TfidfVectorizer(sublinear_tf=True, min_df=5, max_df=0.95)
 X = vectorizer.fit_transform(city_df['Keywords']).toarray()
 
-# Define range of clusters to check
-inertia_scores = []
-silhouette_scores = []
-no_of_clusters = range(2, 22)
+# # Define range of clusters to check
+# inertia_scores = []
+# silhouette_scores = []
+# no_of_clusters = range(2, 22)
 
-# Calculate intertia & silhouette average for each cluster
-for cluster in tqdm(no_of_clusters):
-    kmeans = KMeans(n_clusters=cluster, init="k-means++", random_state=42)
-    kmeans = kmeans.fit(X)
+# # Calculate intertia & silhouette average for each cluster
+# for cluster in tqdm(no_of_clusters):
+#     kmeans = KMeans(n_clusters=cluster, init="k-means++", random_state=42)
+#     kmeans = kmeans.fit(X)
     
-    inertia = kmeans.inertia_
-    silhouette_avg = silhouette_score(X, kmeans.labels_)
+#     inertia = kmeans.inertia_
+#     silhouette_avg = silhouette_score(X, kmeans.labels_)
     
-    inertia_scores.append(round(inertia))
-    silhouette_scores.append(silhouette_avg)
+#     inertia_scores.append(round(inertia))
+#     silhouette_scores.append(silhouette_avg)
 
-# Interia scree plot
-fig, ax = plt.subplots(figsize=(10, 6))
-plt.plot(range(1, len(no_of_clusters)+1), inertia_scores, marker="o", linewidth=2, linestyle="--")
-plt.xticks(range(1, len(no_of_clusters)+1), no_of_clusters, fontsize=12, fontweight="bold")
-ax.set_yticklabels(["{:,.0f}".format(x/1000) + "K" for x in ax.get_yticks()])
-plt.yticks(fontsize=12, fontweight="bold")
-plt.xlabel("# of Clusters", fontsize=16, fontweight="bold")
-plt.ylabel("Inertia", fontsize=16, fontweight="bold")
-plt.title("Inertia Scree Plot per Cluster", fontsize=20, fontweight="bold")
-ax.title.set_position([.5, 1.025])
-plt.grid(False)
-plt.tight_layout()
-plt.show()
+# # Interia scree plot
+# fig, ax = plt.subplots(figsize=(10, 6))
+# plt.plot(range(1, len(no_of_clusters)+1), inertia_scores, marker="o", linewidth=2, linestyle="--")
+# plt.xticks(range(1, len(no_of_clusters)+1), no_of_clusters, fontsize=12, fontweight="bold")
+# ax.set_yticklabels(["{:,.0f}".format(x/1000) + "K" for x in ax.get_yticks()])
+# plt.yticks(fontsize=12, fontweight="bold")
+# plt.xlabel("# of Clusters", fontsize=16, fontweight="bold")
+# plt.ylabel("Inertia", fontsize=16, fontweight="bold")
+# plt.title("Inertia Scree Plot per Cluster", fontsize=20, fontweight="bold")
+# ax.title.set_position([.5, 1.025])
+# plt.grid(False)
+# plt.tight_layout()
+# plt.show()
 
-slopes = [0]
-slopes_pct_change = []
-inertia_df = pd.DataFrame()
-inertia_df["inertia"] = inertia_scores
-inertia_df["n_clusters"] = inertia_df.index + 2
+# slopes = [0]
+# slopes_pct_change = []
+# inertia_df = pd.DataFrame()
+# inertia_df["inertia"] = inertia_scores
+# inertia_df["n_clusters"] = inertia_df.index + 2
 
-def derivative_calc(df, x_field, y_field):
-    x_values = df[x_field].values
-    y_values = df[y_field].values
-    for i in range(1, len(x_values)):
-        (x1, y1) = (x_values[i-1], y_values[i-1])
-        (x2, y2) = (x_values[i], y_values[i])
-        slope = round((y2 - y1) / (x2 - x1), 4)
-        slopes.append(slope)
-        slopes_pct_change.append((abs(slopes[i-1]) - abs(slopes[i])) / abs(slopes[i-1]))
-    df["slopes"] = slopes
-    df["slopes_pct_change"] = slopes_pct_change + [0]
+# def derivative_calc(df, x_field, y_field):
+#     x_values = df[x_field].values
+#     y_values = df[y_field].values
+#     for i in range(1, len(x_values)):
+#         (x1, y1) = (x_values[i-1], y_values[i-1])
+#         (x2, y2) = (x_values[i], y_values[i])
+#         slope = round((y2 - y1) / (x2 - x1), 4)
+#         slopes.append(slope)
+#         slopes_pct_change.append((abs(slopes[i-1]) - abs(slopes[i])) / abs(slopes[i-1]))
+#     df["slopes"] = slopes
+#     df["slopes_pct_change"] = slopes_pct_change + [0]
 
-# Define optimal number of clusters
-derivative_calc(inertia_df, "n_clusters", "inertia")
-n_clusters_kmeans = int(inertia_df.loc[inertia_df["slopes_pct_change"].idxmax()]["n_clusters"])
-print("# of Clusters for KMeans Algorithm:", n_clusters_kmeans)
+# # Define optimal number of clusters
+# derivative_calc(inertia_df, "n_clusters", "inertia")
+# n_clusters_kmeans = int(inertia_df.loc[inertia_df["slopes_pct_change"].idxmax()]["n_clusters"])
+# print("# of Clusters for KMeans Algorithm:", n_clusters_kmeans)
+
+kmeans = KMeans(n_clusters=20, init="k-means++", random_state=42)
+y_kmeans = kmeans.fit_predict(X)
+
+def cluster_cnts(predictions, algorithm):
+    
+    unique, counts = np.unique(predictions, return_counts=True)
+    cluster_cnts_df = pd.DataFrame(counts)
+    cluster_cnts_df["ratio"] = round(100 * cluster_cnts_df[0] / cluster_cnts_df[0].sum(), 4)
+    cluster_cnts_df = cluster_cnts_df.reset_index()
+    cluster_cnts_df.columns = ["cluster", "count", "ratio"]
+    
+    print(f"Breakdown of Cities in Each {algorithm} Cluster")
+    return cluster_cnts_df
+
+print(cluster_cnts(y_kmeans, "KMeans"))
+
+silhouette_kmeans_euclidean = round(silhouette_score(X, y_kmeans, metric="euclidean"), 4)
+silhouette_kmeans_manhattan = round(silhouette_score(X, y_kmeans, metric="manhattan"), 4)
+print("Silhouette Score KMeans Euclidean:", silhouette_kmeans_euclidean, "\nSilhouette Score KMeans Manhattan:", silhouette_kmeans_manhattan)
+
+
 
 # save the data
 # city_df.to_csv('national_capitals.csv', index=False)
