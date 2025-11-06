@@ -74,14 +74,12 @@ if __name__ == '__main__': # for Windows compatibility
         df = pd.read_html(html, extract_links = "body")[1]  # Try 2nd table first as most pages contain contents table first
     except IndexError:
         df = pd.read_html(html, extract_links = "body")[0]
-    print(df['City/Town'].to_string())
 
     # df.to_csv('national_capitals.csv', index=False)
 
     # get what we want from the pages
     # city name, keywords, & cluster label
     city_df = df[['City/Town', 'Country/Territory']]
-    # city_df.rename({'City/Town': 'Name', 'Country/Territory' : 'Keywords'}, axis=1)
     city_df.rename(columns={'City/Town': 'Name', 'Country/Territory': 'Keywords'})
     for index, row in df.iterrows():
         # record the city's name in the new dataframe
@@ -142,7 +140,7 @@ if __name__ == '__main__': # for Windows compatibility
         # store the keywords in that city's Keywords column
         city_df.loc[index, 'Keywords'] = ' '.join([kw for kw, v in keyphrases])
     city_df = city_df.drop(['City/Town', 'Country/Territory'], axis=1) # we don't need these columns now
-    city_df.drop_duplicates(subset=['Name'], keep='last') # dropping duplicates in case a city is mentioned twice or more in the table that we scraped
+    city_df.drop_duplicates(subset=['Name'], keep='last', inplace=True) # dropping duplicates in case a city is mentioned twice or more in the table that we scraped
 
     # make clusters of the cities!
     # thanks to https://www.kaggle.com/code/ronnahshon/unsupervised-clustering-with-us-census-tracts
@@ -237,7 +235,6 @@ if __name__ == '__main__': # for Windows compatibility
     print("Silhouette Score KMeans Euclidean:", silhouette_kmeans_euclidean, "\nSilhouette Score KMeans Manhattan:", silhouette_kmeans_manhattan)
 
     # store cluster number for each city
-    # city_df['Kmeans'] = None
     city_df.insert(loc=1, column='Kmeans', value=['' for i in range(city_df.shape[0])]) # initialize a new empty column to store cluster numbers for this particular algorithm
     for index, row in city_df.iterrows():
         # store the number in that city's cluster number column
