@@ -141,7 +141,8 @@ if __name__ == '__main__': # for Windows compatibility
 
         # store the keywords in that city's Keywords column
         city_df.loc[index, 'Keywords'] = ' '.join([kw for kw, v in keyphrases])
-    city_df = city_df.drop(['City/Town', 'Country/Territory'], axis=1)
+    city_df = city_df.drop(['City/Town', 'Country/Territory'], axis=1) # we don't need these columns now
+    city_df.drop_duplicates(subset=['Name'], keep='last') # dropping duplicates in case a city is mentioned twice or more in the table that we scraped
 
     # make clusters of the cities!
     # thanks to https://www.kaggle.com/code/ronnahshon/unsupervised-clustering-with-us-census-tracts
