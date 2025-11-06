@@ -77,7 +77,7 @@ print(df['City/Town'].to_string())
 # city name, keywords, & cluster label
 city_df = df[['City/Town', 'Country/Territory']]
 # city_df.rename({'City/Town': 'Name', 'Country/Territory' : 'Keywords'}, axis=1)
-df.rename(columns={'City/Town': 'Name', 'Country/Territory': 'Keywords'})
+city_df.rename(columns={'City/Town': 'Name', 'Country/Territory': 'Keywords'})
 for index, row in df.iterrows():
     # record the city's name in the new dataframe
     city_name = unquote(str(df.iloc[index]['City/Town'][1][6:].replace('_',' '))) # thanks to https://stackoverflow.com/a/16566128
@@ -154,7 +154,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 # X = city_df[['Keywords']].values
 # thanks to https://medium.com/@danielafrimi/text-clustering-using-nlp-techniques-c2e6b08b6e95
 vectorizer = TfidfVectorizer(sublinear_tf=True, min_df=5, max_df=0.95)
-X = vectorizer.fit_transform(df['text_cleaned']).toarray()
+X = vectorizer.fit_transform(city_df['Keywords']).toarray()
 
 # Define range of clusters to check
 inertia_scores = []
