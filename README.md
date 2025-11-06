@@ -11,5 +11,5 @@ Discover which cities have some unexpected things in common! This application us
         - [ ] Consider using overlapping clustering algorithm like fuzzy c-means, NOT an exclusive algorithm like k-means
         - [X] Determine optimal number of clusters empirically (using set of capitals (or cities w/ >1M inhabitants))
         - [ ] Consider using LLM embeddings or sentence transformers (as opposed to TF-IDF, GloVe, or BERT, for example)
-        - [ ] Parallel processing
+        - [ ] Parallel processing (scikit-learn's KMeans already uses OpenMP-based parallelism through Cython w/ a low memory footprint)
 - [ ] Map showing cities
