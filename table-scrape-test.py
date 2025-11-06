@@ -67,80 +67,86 @@ def basicForm(word):
     else:
         return lemmatizer.lemmatize(word)
 
+# scrape cities from a table on Wikipedia & return a dataframe of cities (name & keywords)
+def get_cities(title):
+        html = wp.page(title, auto_suggest=False).html().encode("UTF-8")
+        try: 
+            df = pd.read_html(html, extract_links = "body")[1]  # Try 2nd table first as most pages contain contents table first
+        except IndexError:
+            df = pd.read_html(html, extract_links = "body")[0]
+
+        # df.to_csv('national_capitals.csv', index=False)
+
+        # get what we want from the pages
+        # city name, keywords, & cluster label
+        city_df = df[['City/Town', 'Country/Territory']]
+        city_df.rename(columns={'City/Town': 'Name', 'Country/Territory': 'Keywords'})
+        for index, row in df.iterrows():
+            # record the city's name in the new dataframe
+            city_name = unquote(str(df.iloc[index]['City/Town'][1][6:].replace('_',' '))) # thanks to https://stackoverflow.com/a/16566128
+            print(city_name)
+            city_df.loc[index, 'Name'] = city_name
+
+            # follow the link to that city's page
+            # url='https://en.wikipedia.org' + df.iloc[index]['City/Town'][1]
+            # print(url)
+            # response = requests.get(url=url)
+            # soup = BeautifulSoup(response.content, 'html.parser')
+            # # title = soup.find('h1')
+            # # print(title.string)
+            # # print([item.get_text() for item in soup.select("mw-page-title-main")])
+            # # city_page = wp.page(df.iloc[index]['City/Town'][0], auto_suggest=False).html().encode("UTF-8")
+            # # print(city_page.summary)
+            # title = soup.find('h1')
+            # print(title)
+            # print(title.string)
+            city_page = wp.page(city_name, auto_suggest=False)
+            # print(city_page.summary)
+
+            # get the keywords of this page's content
+            text = city_page.content.lower().strip()
+
+            # using NLTK
+            english_stops = set(stopwords.words('english'))
+            words = word_tokenize(text)
+            words_list = [word for word in words if word not in english_stops]
+            # print(words_list)
+            important_words = ' '.join(words_list)
+            # print(important_words)
+
+            # NLTK information extraction
+            sentences = nltk.sent_tokenize(text)
+            tokenized_sentences = [nltk.word_tokenize(sentence) for sentence in sentences]
+            tagged_sentences = [nltk.pos_tag(sentence) for sentence in tokenized_sentences]
+            best_parts = []
+            for sent in tagged_sentences:
+                # print(nltk.ne_chunk(sent))
+                best_parts_of_sent = [t[0] for t in sent if (t[1] == "NN" or t[1] == "NNS" or t[1] == "JJ")]
+                for word in best_parts_of_sent:
+                    best_parts.append(word)
+            # print(best_parts)
+            # print(len(best_parts))
+            best_parts_str = ' '.join(best_parts)
+            # print(best_parts_str)
+
+            # print the top keyphrases out of those words
+            # using YAKE!
+            kw_extractor = yake.KeywordExtractor(n=1, top=500, stopwords=english_stops)
+            keyphrases = kw_extractor.extract_keywords(best_parts_str)
+            # print("new keywords!")
+            # for kw, v in keyphrases:
+            #     print("Keyphrase: ",kw, ": score", v)
+
+            # store the keywords in that city's Keywords column
+            city_df.loc[index, 'Keywords'] = ' '.join([kw for kw, v in keyphrases])
+        city_df = city_df.drop(['City/Town', 'Country/Territory'], axis=1) # we don't need these columns now
+        city_df.drop_duplicates(subset=['Name'], keep='last', inplace=True) # dropping duplicates in case a city is mentioned twice or more in the table that we scraped
+        
+        return city_df
+
 if __name__ == '__main__': # for Windows compatibility
 
-    html = wp.page("List of national capitals", auto_suggest=False).html().encode("UTF-8")
-    try: 
-        df = pd.read_html(html, extract_links = "body")[1]  # Try 2nd table first as most pages contain contents table first
-    except IndexError:
-        df = pd.read_html(html, extract_links = "body")[0]
-
-    # df.to_csv('national_capitals.csv', index=False)
-
-    # get what we want from the pages
-    # city name, keywords, & cluster label
-    city_df = df[['City/Town', 'Country/Territory']]
-    city_df.rename(columns={'City/Town': 'Name', 'Country/Territory': 'Keywords'})
-    for index, row in df.iterrows():
-        # record the city's name in the new dataframe
-        city_name = unquote(str(df.iloc[index]['City/Town'][1][6:].replace('_',' '))) # thanks to https://stackoverflow.com/a/16566128
-        print(city_name)
-        city_df.loc[index, 'Name'] = city_name
-
-        # follow the link to that city's page
-        # url='https://en.wikipedia.org' + df.iloc[index]['City/Town'][1]
-        # print(url)
-        # response = requests.get(url=url)
-        # soup = BeautifulSoup(response.content, 'html.parser')
-        # # title = soup.find('h1')
-        # # print(title.string)
-        # # print([item.get_text() for item in soup.select("mw-page-title-main")])
-        # # city_page = wp.page(df.iloc[index]['City/Town'][0], auto_suggest=False).html().encode("UTF-8")
-        # # print(city_page.summary)
-        # title = soup.find('h1')
-        # print(title)
-        # print(title.string)
-        city_page = wp.page(city_name, auto_suggest=False)
-        # print(city_page.summary)
-
-        # get the keywords of this page's content
-        text = city_page.content.lower().strip()
-
-        # using NLTK
-        english_stops = set(stopwords.words('english'))
-        words = word_tokenize(text)
-        words_list = [word for word in words if word not in english_stops]
-        # print(words_list)
-        important_words = ' '.join(words_list)
-        # print(important_words)
-
-        # NLTK information extraction
-        sentences = nltk.sent_tokenize(text)
-        tokenized_sentences = [nltk.word_tokenize(sentence) for sentence in sentences]
-        tagged_sentences = [nltk.pos_tag(sentence) for sentence in tokenized_sentences]
-        best_parts = []
-        for sent in tagged_sentences:
-            # print(nltk.ne_chunk(sent))
-            best_parts_of_sent = [t[0] for t in sent if (t[1] == "NN" or t[1] == "NNS" or t[1] == "JJ")]
-            for word in best_parts_of_sent:
-                best_parts.append(word)
-        # print(best_parts)
-        # print(len(best_parts))
-        best_parts_str = ' '.join(best_parts)
-        # print(best_parts_str)
-
-        # print the top keyphrases out of those words
-        # using YAKE!
-        kw_extractor = yake.KeywordExtractor(n=1, top=500, stopwords=english_stops)
-        keyphrases = kw_extractor.extract_keywords(best_parts_str)
-        # print("new keywords!")
-        # for kw, v in keyphrases:
-        #     print("Keyphrase: ",kw, ": score", v)
-
-        # store the keywords in that city's Keywords column
-        city_df.loc[index, 'Keywords'] = ' '.join([kw for kw, v in keyphrases])
-    city_df = city_df.drop(['City/Town', 'Country/Territory'], axis=1) # we don't need these columns now
-    city_df.drop_duplicates(subset=['Name'], keep='last', inplace=True) # dropping duplicates in case a city is mentioned twice or more in the table that we scraped
+    city_df = get_cities("List of national capitals")
 
     # make clusters of the cities!
     # thanks to https://www.kaggle.com/code/ronnahshon/unsupervised-clustering-with-us-census-tracts
