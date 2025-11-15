@@ -2,7 +2,7 @@
 # thanks to Dipal Bhavsar: https://www.bacancytechnology.com/blog/react-with-python
 
 from flask import Flask, request, jsonify
-# from flask_cors import CORS
+# from flask_cors import CORS # cross-origin resource sharing (one domain requests a resource from another domain; frontend communicates w/ backend)
 
 app = Flask(__name__)
 # CORS(app=app)
