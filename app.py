@@ -1,9 +1,11 @@
-# thanks to: https://realpython.com/python-web-applications/
+# thanks to Martin Breuss: https://realpython.com/python-web-applications/
+# thanks to Dipal Bhavsar: https://www.bacancytechnology.com/blog/react-with-python
 
-from flask import Flask
-from flask import request
+from flask import Flask, request, jsonify
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app=app)
 
 @app.route("/")
 def index():
