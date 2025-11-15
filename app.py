@@ -2,10 +2,10 @@
 # thanks to Dipal Bhavsar: https://www.bacancytechnology.com/blog/react-with-python
 
 from flask import Flask, request, jsonify
-from flask_cors import CORS
+# from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app=app)
+# CORS(app=app)
 
 @app.route("/")
 def index():
