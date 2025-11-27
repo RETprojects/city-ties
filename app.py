@@ -3,6 +3,7 @@
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS # cross-origin resource sharing (one domain requests a resource from another domain; frontend communicates w/ backend)
+from flask import send_from_directory
 import json
 import pandas as pd
 
@@ -24,8 +25,7 @@ def get_data():
 
     return data
 
-from flask import send_from_directory
-
+# a route in Flask to serve the React app
 @app.route('/')
 def serve():
     return send_from_directory('react-frontend/build', 'index.html')
