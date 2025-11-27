@@ -6,6 +6,16 @@ import './App.css';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
+// https://react.dev/learn/sharing-state-between-components
+function filterItems(items, query) {
+  query = query.toLowerCase();
+  return items.filter(item =>
+    item.name.split(' ').some(word =>
+      word.toLowerCase().startsWith(query)
+    )
+  );
+}
+
 const App = () => {
     const [data, setData] = useState('');
 
