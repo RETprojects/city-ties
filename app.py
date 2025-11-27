@@ -3,13 +3,20 @@
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS # cross-origin resource sharing (one domain requests a resource from another domain; frontend communicates w/ backend)
+import json
 
 app = Flask(__name__)
 CORS(app=app)
 
-@app.route('/api/data', methods=['GET'])
+# @app.route('/api/data', methods=['GET'])
+# def get_data():
+#     return jsonify({"message": "Hello from Python!"})
+
+@app.route('/', methods=['GET'])
 def get_data():
-    return jsonify({"message": "Hello from Python!"})
+    with open('national_capitals.jsonl') as f:
+        d = json.load(f) # load the cities JSON data
+        return d
 
 # @app.route("/")
 # def index():
