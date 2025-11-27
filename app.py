@@ -4,6 +4,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS # cross-origin resource sharing (one domain requests a resource from another domain; frontend communicates w/ backend)
 import json
+import pandas as pd
 
 app = Flask(__name__)
 CORS(app=app)
@@ -14,9 +15,18 @@ CORS(app=app)
 
 @app.route('/', methods=['GET'])
 def get_data():
-    with open('national_capitals.jsonl') as f:
-        d = json.load(f) # load the cities JSON data
-        return d
+    # thanks to Tim Santeford: https://www.timsanteford.com/posts/how-to-read-and-parse-jsonl-files-in-python/
+    file_path = "national_capitals.jsonl"
+    data = []
+
+    with open(file_path, 'r', encoding='utf-8') as file:
+        for line in file:
+            try:
+                data.append(json.loads(line))
+            except json.JSONDecodeError:
+                continue
+
+    return data
 
 # @app.route("/")
 # def index():
