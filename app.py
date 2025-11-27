@@ -9,10 +9,6 @@ import pandas as pd
 app = Flask(__name__)
 CORS(app=app)
 
-# @app.route('/api/data', methods=['GET'])
-# def get_data():
-#     return jsonify({"message": "Hello from Python!"})
-
 @app.route('/', methods=['GET'])
 def get_data():
     # thanks to Tim Santeford: https://www.timsanteford.com/posts/how-to-read-and-parse-jsonl-files-in-python/
