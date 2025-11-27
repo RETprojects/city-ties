@@ -24,6 +24,12 @@ def get_data():
 
     return data
 
+from flask import send_from_directory
+
+@app.route('/')
+def serve():
+    return send_from_directory('react-frontend/build', 'index.html')
+
 # @app.route("/")
 # def index():
 #     celsius = request.args.get("celsius", "")
