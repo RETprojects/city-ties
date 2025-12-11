@@ -17,46 +17,22 @@ function filterItems(items, query) {
 }
 
 const App = () => {
-    const [data, setData] = useState('');
+    // thanks to Abdelhakim Smyaj: https://stackoverflow.com/a/79486650
 
-    // get the data from the backend & use it
+    const [data, setData] = useState(null);
+
     useEffect(() => {
-        axios.get('http://127.0.0.1:5000/') // Flask
-            .then(response => {
-                setData(response.data);
-            })
-            .catch(error => {
-                console.error('Error fetching data:', error);
-            });
+        fetch('/api/data')
+        .then(response => response.json())
+        .then(data => setData(data));
     }, []);
 
     return (
         <div>
-            <h1>React with Python</h1>
-            <p>{data}</p>
+        <h1>City Ties</h1>
+        {data && <p>{data.message}</p>}
         </div>
     );
 };
-
-// function App() {
-//   return (
-//     <div className="App">
-//       <header className="App-header">
-//         <img src={logo} className="App-logo" alt="logo" />
-//         <p>
-//           Edit <code>src/App.js</code> and save to reload.
-//         </p>
-//         <a
-//           className="App-link"
-//           href="https://reactjs.org"
-//           target="_blank"
-//           rel="noopener noreferrer"
-//         >
-//           Learn React
-//         </a>
-//       </header>
-//     </div>
-//   );
-// }
 
 export default App;
